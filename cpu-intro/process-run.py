@@ -64,6 +64,7 @@ class scheduler:
     def load_program(self, program):
         proc_id = self.new_process()
         for line in program.split(','):
+            # TODO: Change this to match case to allow for more sophisticated opcodes
             opcode = line[0]
             if opcode == 'c': # compute
                 num = int(line[1:])
@@ -124,6 +125,7 @@ class scheduler:
             self.curr_proc = pid
             self.move_to_running(STATE_READY)
             return
+        # Hmm? This is Round Robin? TODO: Add other ways of allocating cpu time
         for pid in range(self.curr_proc + 1, len(self.proc_info)):
             if self.proc_info[pid][PROC_STATE] == STATE_READY:
                 self.curr_proc = pid
@@ -172,7 +174,7 @@ class scheduler:
         return
 
     def space(self, num_columns):
-        for i in range(num_columns):
+        for _ in range(num_columns):
             print('%10s' % ' ', end='')
 
     def check_if_done(self):
@@ -233,7 +235,7 @@ class scheduler:
                             # this is the only thing to run: so run it
                             self.next_proc(pid)
                     self.check_if_done()
-            
+
             # if current proc is RUNNING and has an instruction, execute it
             instruction_to_execute = ''
             if self.proc_info[self.curr_proc][PROC_STATE] == STATE_RUNNING and \
@@ -278,7 +280,7 @@ class scheduler:
             # ENDCASE: check if currently running thing is out of instructions
             self.check_if_done()
         return (cpu_busy, io_busy, clock_tick)
-        
+
 #
 # PARSE ARGUMENTS
 #
